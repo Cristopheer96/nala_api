@@ -3,7 +3,7 @@ class LeaveRequest < ApplicationRecord
 
   validates :start_date, :end_date, presence: true
   validate :end_date_after_start_date
-  validate :no_overlap, on: :create 
+  validate :no_overlap, on: :create
 
   def duration
     (end_date - start_date).to_i + 1
