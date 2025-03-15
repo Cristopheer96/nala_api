@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'https://tu-aplicacion-react.com'  # Cambia por el dominio de tu frontend. Para desarrollo, puede ser http://localhost:3000
+    origins 'https://tu-aplicacion-react.com', 'http://localhost:3001'   # Cambia por el dominio de tu frontend. Para desarrollo, puede ser http://localhost:3000
     resource '*',
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head],
