@@ -12,6 +12,9 @@ gem "sqlite3", "~> 1.4"
 gem 'devise'
 gem 'devise_token_auth'
 
+# roo gem to handling xls import
+gem 'roo'
+
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
