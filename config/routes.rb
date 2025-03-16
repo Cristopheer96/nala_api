@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :api do
-    namespace :v1 do
+    namespace :v1, defaults: { format: :json } do
       get 'users', to: 'users#list'
       resources :leave_requests, only: [] do
         collection do
@@ -15,6 +15,10 @@ Rails.application.routes.draw do
           get :healthcheck
           get :index
           post :create
+        end
+        member do
+          put :update
+          delete :destroy
         end
       end
     end
