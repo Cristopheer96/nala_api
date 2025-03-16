@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :leave_requests, only: [] do
         collection do
           post :import
+          get :analytics
           get :healthcheck
           get :index
           post :create

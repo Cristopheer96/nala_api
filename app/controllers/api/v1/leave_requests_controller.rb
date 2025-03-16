@@ -32,6 +32,11 @@ module Api
         render_service_response(result)
       end
 
+      def analytics
+        result = LeaveRequests::UsersLeaveDaysQuery.call(query_analytics_params)
+        render_service_response(result)
+      end
+
       # TODO: Remove this acton
       def healthcheck
         if User.all.empty?
@@ -42,6 +47,19 @@ module Api
       end
 
       private
+
+        def query_analytics_params
+          {
+            start_date: params[:start_date],
+            end_date: params[:end_date],
+            leader_name: params[:leader_name],
+            name: params[:name],
+            order: params[:order],
+            order_by: params[:order_by],
+            page: fetch_page,
+            per_page: fetch_per_page
+          }
+        end
 
         def leave_request_params
           params.require(:leave_request).permit(:leave_type, :start_date, :end_date, :notes, :status)
