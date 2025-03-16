@@ -2,17 +2,17 @@ module LeaveRequests
   class UsersLeaveDaysQuery < ApplicationQuery
     include DateRangeCalculator
 
-    # Se esperan los filtros: :leader_name, :name, :start_date, :end_date, :page, :per_page, :order_by, :order
     def initialize(filters = {})
       super()
       @leader_name = filters[:leader_name]
       @name        = filters[:name]
       @start_date  = filters[:start_date] ? Date.parse(filters[:start_date]) : nil
       @end_date    = filters[:end_date] ? Date.parse(filters[:end_date]) : nil
-      @page        = (filters[:page] || 1).to_i
-      @per_page    = (filters[:per_page] || 10).to_i
+      @page     = filters[:page]
+      @per_page = filters[:per_page]
       @order_by = filters[:order_by] || 'u.name'
       @order_direction = filters[:order]&.downcase == 'desc' ? 'DESC' : 'ASC'
+
       calculate_date_range if @start_date.nil? || @end_date.nil?
     end
 
@@ -25,30 +25,24 @@ module LeaveRequests
     private
 
     def raw_query
-      # Condiciones para filtrar la tabla users
       user_conditions = []
-      user_conditions << "u.leader_name = '#{@leader_name}'" if @leader_name.present?
-      user_conditions << "u.name = '#{@name}'" if @name.present?
+      user_conditions << "u.leader_name ILIKE '%#{@leader_name}%'" if @leader_name.present?
+      user_conditions << "u.name ILIKE '%#{@name}%'" if @name.present?
       where_clause = user_conditions.empty? ? "1=1" : user_conditions.join(" AND ")
 
-      # Condiciones para leave_requests: lógica de solapamiento
       join_conditions = []
       join_conditions << "lr.status = 'aprobado'"
       join_conditions << "lr.end_date >= '#{@start_date.strftime('%Y-%m-%d')}'"
       join_conditions << "lr.start_date <= '#{@end_date.strftime('%Y-%m-%d')}'"
       join_clause = join_conditions.join(" AND ")
-
-      # Calculamos LIMIT y OFFSET para la paginación
       offset = (@page - 1) * @per_page
-
-      # Permitimos solo columnas seguras para ordenar
-      allowed_order_by = ['u.name', 'total_days']
+      allowed_order_by = ['u.name', 'u.leader_name', 'total_days']
       order_by_clause = allowed_order_by.include?(@order_by) ? @order_by : 'u.name'
+
 
       <<-SQL.squish
         SELECT u.id,
                u.name,
-               u.email,
                u.leader_name,
                COALESCE(SUM(
                  CASE
@@ -70,7 +64,6 @@ module LeaveRequests
     def process
       query_string = raw_query
       result = ActiveRecord::Base.connection.execute(query_string)
-
       total = count_total_records
 
       { query: result, range: { start_date: @start_date, end_date: @end_date },
@@ -79,8 +72,8 @@ module LeaveRequests
 
     def count_total_records
       user_conditions = []
-      user_conditions << "u.leader_name = '#{@leader_name}'" if @leader_name.present?
-      user_conditions << "u.name = '#{@name}'" if @name.present?
+      user_conditions << "u.leader_name ILIKE '%#{@leader_name}%'" if @leader_name.present?
+      user_conditions << "u.name ILIKE '%#{@name}%'" if @name.present?
       where_clause = user_conditions.empty? ? "1=1" : user_conditions.join(" AND ")
 
       join_conditions = []

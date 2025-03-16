@@ -7,10 +7,10 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'https://tu-aplicacion-react.com', 'http://localhost:3001'   # Cambia por el dominio de tu frontend. Para desarrollo, puede ser http://localhost:3000
+    origins 'https://nala-front.vercel.app', 'http://localhost:3001' 
     resource '*',
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head],
-      expose: ['access-token', 'client', 'uid']  # Si usas Devise Token Auth, por ejemplo.
+      expose: ['access-token', 'client', 'uid']
   end
 end
