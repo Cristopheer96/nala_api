@@ -18,7 +18,7 @@ module LeaveRequests
       items = LeaveRequest.includes(:user).paginate(page: @page, per_page: @per_page)
       {
         items: items.map do |leave_request|
-          leave_request.attributes.merge(user_name: leave_request.user.name, s: leave_request.user.leader_name)
+          leave_request.attributes.merge(user_name: leave_request.user.name, leader_name: leave_request.user.leader_name)
         end,
         pagination: {
           current_page: items.current_page,
