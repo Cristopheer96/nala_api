@@ -44,6 +44,7 @@ module LeaveRequests
         SELECT u.id,
                u.name,
                u.leader_name,
+               u.email,
                COALESCE(SUM(
                  CASE
                    WHEN lr.start_date IS NOT NULL THEN
