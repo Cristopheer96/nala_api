@@ -8,10 +8,13 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      get 'users', to: 'users#list'
       resources :leave_requests, only: [] do
         collection do
           post :import
           get :healthcheck
+          get :index
+          post :create
         end
       end
     end

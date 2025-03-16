@@ -19,11 +19,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_223004) do
     t.string "leave_type"
     t.date "start_date"
     t.date "end_date"
-    t.string "status"
+    t.string "status", default: "pendiente"
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id", "leave_type", "start_date", "end_date"], name: "idx_on_user_id_leave_type_start_date_end_date_e7ec923d07"
+    t.index ["user_id", "leave_type", "start_date", "end_date", "status"], name: "idx_on_user_id_leave_type_start_date_end_date_statu_3af44d223b"
     t.index ["user_id"], name: "index_leave_requests_on_user_id"
   end
 

@@ -8,9 +8,23 @@ module Api
 
         file = params[:file]
         result = LeaveRequests::ImportUseCase.call(file)
-        raise(result.error) unless result.success?
+        return render json: result.error, status: :unprocessable_entity unless result.success?
 
         render json: result.payload, status: :ok
+      end
+
+      def index
+        result = LeaveRequests::ListService.call(page: fetch_page, per_page: fetch_per_page)
+        return render json: result.error, status: :unprocessable_entity unless result.success?
+
+        render json: result.payload, status: :ok
+      end
+
+      def create
+        result = LeaveRequests::CreateService.call(current_user, leave_request_params)
+        return render json: result.error, status: :unprocessable_entity unless result.success?
+
+        render json: result.payload, status: :created
       end
 
       # TODO: Remove this acton
@@ -21,6 +35,12 @@ module Api
           render json: User.all, status: :ok
         end
       end
+
+      private
+
+        def leave_request_params
+          params.require(:leave_request).permit(:leave_type, :start_date, :end_date, :notes)
+        end
     end
   end
 end

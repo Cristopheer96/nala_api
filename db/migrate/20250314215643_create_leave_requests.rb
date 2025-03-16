@@ -11,12 +11,12 @@ class CreateLeaveRequests < ActiveRecord::Migration[7.1]
       t.string :leave_type
       t.date :start_date
       t.date :end_date
-      t.string :status
+      t.string :status, default: 'pendiente'
       t.text :notes
 
       t.timestamps
     end
 
-    add_index :leave_requests, %i[user_id leave_type start_date end_date]
+    add_index :leave_requests, %i[user_id leave_type start_date end_date status]
   end
 end

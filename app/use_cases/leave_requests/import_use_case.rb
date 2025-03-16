@@ -24,7 +24,9 @@ module LeaveRequests
         (2..spreadsheet.last_row).each do |i|
           row = Hash[[header, spreadsheet.row(i)].transpose]
           begin
-            LeaveRequests::ImportRowService.call(row, i)
+            result = LeaveRequests::ImportRowService.call(row, i)
+            raise(result.error) unless result.success?
+
             imported_count += 1
           rescue StandardError => e
             raise StandardError, "Error en la fila #{i}: #{e.message}"
