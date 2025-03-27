@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'https://nala-front.vercel.app', 'http://localhost:3001' 
+    origins 'https://nala-front.vercel.app', 'http://localhost:3001', 'https://cristopher-tuco-front.vercel.app'
     resource '*',
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head],

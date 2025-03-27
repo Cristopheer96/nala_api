@@ -39,7 +39,6 @@ module LeaveRequests
       allowed_order_by = ['u.name', 'u.leader_name', 'total_days']
       order_by_clause = allowed_order_by.include?(@order_by) ? @order_by : 'u.name'
 
-
       <<-SQL.squish
         SELECT u.id,
                u.name,
